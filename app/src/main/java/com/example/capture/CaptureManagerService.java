@@ -43,7 +43,7 @@ public class CaptureManagerService extends Service {
     private final Messenger mMessenger = new Messenger(new Handler(new Handler.Callback() {
         @Override
         public boolean handleMessage(Message msg) {
-            Log.d(TAG, "Message from MainActivity msg.what : " + msg.what + " , msg.obj " + msg.obj);
+            Log.d(TAG, "Message from MainActivity msg.what : " + Util.getCommandStirng(msg.what));
             mClient = msg.replyTo;
             switch (msg.what) {
                 case MSG_STORE_BMP_TO_SERVICE:

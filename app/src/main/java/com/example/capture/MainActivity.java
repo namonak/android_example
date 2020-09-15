@@ -98,12 +98,13 @@ public class MainActivity extends Activity implements TextureView.SurfaceTexture
     private final Messenger mMessenger = new Messenger(new Handler(new Handler.Callback() {
         @Override
         public boolean handleMessage(Message msg) {
-            Log.d(TAG, "Message from CaptureManagerService msg.what : " + msg.what + " , msg.obj " + msg.obj);
+            Log.d(TAG, "Message from CaptureManagerService msg.what : " + Util.getCommandStirng(msg.what));
             switch (msg.what) {
                 case CaptureManagerService.MSG_STORE_BMP_TO_SERVICE:
                     Log.d(TAG, "do nothing, not yet...");
                     break;
                 case CaptureManagerService.MSG_LOAD_BMP_TO_ACTIVITY:
+                    Log.d(TAG, "Draw Bitmap");
                     drawBitmap(msg.getData().getByteArray("BitmapFromActivity"));
                     break;
             }

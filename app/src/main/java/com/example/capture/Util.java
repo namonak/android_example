@@ -21,4 +21,19 @@ public class Util {
 
         return bundle;
     }
+
+    static public String getCommandStirng(int cmd) {
+        String str = null;
+
+        switch(cmd) {
+            case CaptureManagerService.MSG_STORE_BMP_TO_SERVICE:
+                str = "MSG_STORE_BMP_TO_SERVICE";
+                break;
+            case CaptureManagerService.MSG_LOAD_BMP_TO_ACTIVITY:
+                str = "MSG_LOAD_BMP_TO_ACTIVITY";
+                break;
+        }
+
+        return str;
+    }
 }
