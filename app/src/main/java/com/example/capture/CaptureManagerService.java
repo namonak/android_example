@@ -2,23 +2,16 @@ package com.example.capture;
 
 import android.app.Service;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
 import android.os.Handler;
 import android.os.IBinder;
+import android.os.MemoryFile;
 import android.os.Message;
 import android.os.Messenger;
 import android.os.RemoteException;
 import android.util.Log;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.OutputStream;
 
 public class CaptureManagerService extends Service {
     public static final int MSG_STORE_BMP_TO_SERVICE = 0;
@@ -26,12 +19,20 @@ public class CaptureManagerService extends Service {
 
     private Messenger mClient = null;   // Activity 에서 가져온 Messenger
 
+    MemoryFile mf;
+    int captureImageSize = 0;
+
     public static final String TAG = "CaptureManagerService";
-    public static final String IMG = "/Pictures/TEST.png";
 
     @Override
     public void onCreate() {
         super.onCreate();
+        createMEM();
+    }
+
+    @Override
+    public void onDestroy() {
+        freeMEM();
     }
 
     @Override
@@ -47,16 +48,18 @@ public class CaptureManagerService extends Service {
             mClient = msg.replyTo;
             switch (msg.what) {
                 case MSG_STORE_BMP_TO_SERVICE:
-                    storeBitmap(msg.getData().getByteArray("BitmapFromActivity"));
+                    try {
+                        storeBitmap(msg.getData().getByteArray("BitmapFromActivity"));
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                     break;
                 case MSG_LOAD_BMP_TO_ACTIVITY:
-                    sendMsgToActivity(CaptureManagerService.MSG_LOAD_BMP_TO_ACTIVITY, Util.setBitmapWithBundle(loadBitmap()));
-                    break;
+                    sendMsgToActivity(CaptureManagerService.MSG_LOAD_BMP_TO_ACTIVITY, null);
             }
             return false;
         }
     }));
-
 
     /** Activity로 메시지 전달 */
     private void sendMsgToActivity(int cmd, Bundle bundle) {
@@ -65,6 +68,15 @@ public class CaptureManagerService extends Service {
                 Message msg = Message.obtain(null, cmd);
                 if (bundle != null) {
                     msg.setData(bundle);
+                }
+                switch (cmd) {
+                    case MSG_STORE_BMP_TO_SERVICE:
+                        Log.d(TAG, "do nothing");
+                        break;
+                    case MSG_LOAD_BMP_TO_ACTIVITY:
+                        msg.obj = mf;
+                        msg.arg1 = captureImageSize;
+                        break;
                 }
                 msg.replyTo = mMessenger;
                 mClient.send(msg);
@@ -75,45 +87,25 @@ public class CaptureManagerService extends Service {
         }
     }
 
-    private void storeBitmap(byte[] byteArray) {
-        String mPath = Environment.getExternalStorageDirectory().toString()
-                + IMG;
-        Log.d(TAG, "Store bitmap to " + mPath);
+    private void storeBitmap(byte[] byteArray) throws IOException {
+        Log.d(TAG, "Stored Bitmap " + byteArray.length);
+        captureImageSize = byteArray.length;
+        mf.writeBytes(byteArray, 0, 0, byteArray.length);
+    }
 
-        Bitmap bm = BitmapFactory.decodeByteArray(byteArray, 0, byteArray.length);
-        if (bm == null) {
-            Log.e(TAG, "bitmap is null");
-        }
-
-        OutputStream file_out;
-        File imageFile = new File(mPath);
-
+    private void createMEM() {
         try {
-            file_out = new FileOutputStream(imageFile);
-            bm.compress(Bitmap.CompressFormat.PNG, 100, file_out);
-            file_out.flush();
-            file_out.close();
-        } catch (FileNotFoundException e) {
-            Log.e(TAG, "FileNotFoundException");
-            e.printStackTrace();
-        } catch (IOException e) {
-            Log.e(TAG, "IOException");
+            mf = new MemoryFile("mf", 1024 * 1024 * 5);
+            Log.d("AndroidIPC::SHM", "Allocated MemoryFile " + mf.length());
+        } catch (IOException e)
+        {
             e.printStackTrace();
         }
     }
 
-    private Bitmap loadBitmap() {
-        String mPath = Environment.getExternalStorageDirectory().toString()
-                + IMG;
-        Log.d(TAG, "load bitmap from " + mPath);
-
-        Uri uri = Uri.fromFile(new File(mPath));
-        Bitmap bm = BitmapFactory.decodeFile(uri.getPath());
-        if (bm == null) {
-            Log.e(TAG, "bitmap is null");
-            return null;
+    private void freeMEM() {
+        if (mf.length() != 0) {
+            mf.close();
         }
-
-        return bm;
     }
 }

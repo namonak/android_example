@@ -12,6 +12,7 @@ import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
+import android.os.MemoryFile;
 import android.os.Message;
 import android.os.Messenger;
 import android.os.RemoteException;
@@ -23,6 +24,8 @@ import android.widget.Button;
 import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
+
+import java.io.IOException;
 
 public class MainActivity extends Activity implements TextureView.SurfaceTextureListener, View.OnClickListener {
     MediaPlayer mediaPlayer;
@@ -59,6 +62,7 @@ public class MainActivity extends Activity implements TextureView.SurfaceTexture
         textureViewButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 sendMessageToService(CaptureManagerService.MSG_LOAD_BMP_TO_ACTIVITY, null);
+                //CaptureManagerService.handler.sendEmptyMessage(CaptureManagerService.MSG_LOAD_BMP_TO_ACTIVITY);
             }
         });
     }
@@ -105,7 +109,15 @@ public class MainActivity extends Activity implements TextureView.SurfaceTexture
                     break;
                 case CaptureManagerService.MSG_LOAD_BMP_TO_ACTIVITY:
                     Log.d(TAG, "Draw Bitmap");
-                    drawBitmap(msg.getData().getByteArray("BitmapFromActivity"));
+                    MemoryFile mf = (MemoryFile)msg.obj;
+                    int size = msg.arg1;
+                    byte[] readArray = new byte[size];
+                    try {
+                        mf.readBytes(readArray, 0, 0, size);
+                        drawBitmap(readArray);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                     break;
             }
             return false;
@@ -117,6 +129,7 @@ public class MainActivity extends Activity implements TextureView.SurfaceTexture
         if (mIsBound && mServiceMessenger != null) {
             try {
                     Message msg = Message.obtain(null, cmd);
+
                     if (bundle != null) {
                         msg.setData(bundle);
                     }
