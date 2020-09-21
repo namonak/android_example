@@ -1,15 +1,23 @@
 package com.example.layout_behavior_test;
 
+import android.app.Activity;
 import android.os.Bundle;
-import android.os.PersistableBundle;
+import android.view.ViewGroup.LayoutParams;
 
 import androidx.annotation.Nullable;
-import androidx.fragment.app.FragmentActivity;
 
-public class MainActivity extends FragmentActivity {
+public class MainActivity extends Activity{
+    MySurfaceView mMySurfaceView;
+    MyTextView mMyTextView;
+
     @Override
-    public void onCreate(@Nullable Bundle savedInstanceState, @Nullable PersistableBundle persistentState) {
-        super.onCreate(savedInstanceState, persistentState);
-        setContentView(R.layout.activity_main);
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        mMySurfaceView = new MySurfaceView(this);
+        setContentView(mMySurfaceView);
+
+        mMyTextView = new MyTextView(this);
+        addContentView(mMyTextView, new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
     }
 }
