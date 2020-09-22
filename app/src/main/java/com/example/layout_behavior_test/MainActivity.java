@@ -31,7 +31,6 @@ public class MainActivity extends Activity{
         graphicView.setZOrderOnTop(true);
         SurfaceHolder holderTransparent = graphicView.getHolder();
         holderTransparent.setFormat(PixelFormat.TRANSPARENT);
-
     }
 
     @Override
@@ -52,6 +51,12 @@ public class MainActivity extends Activity{
                 return true;
             case KeyEvent.KEYCODE_DEL:
                 videoOverlayView.setText("");
+                return true;
+            case KeyEvent.KEYCODE_A:
+                graphicView.drawFigure(GraphicView.Circle);
+                return true;
+            case KeyEvent.KEYCODE_B:
+                graphicView.drawFigure(GraphicView.Rectangle);
                 return true;
             default:
                 return super.onKeyUp(keyCode, event);
