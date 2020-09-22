@@ -1,9 +1,11 @@
 package com.example.layout_behavior_test;
 
 import android.app.Activity;
+import android.graphics.PixelFormat;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.KeyEvent;
+import android.view.SurfaceHolder;
 import android.view.ViewGroup.LayoutParams;
 
 import androidx.annotation.Nullable;
@@ -11,6 +13,7 @@ import androidx.annotation.Nullable;
 public class MainActivity extends Activity{
     VideoView videoView;
     VideoOverlayView videoOverlayView;
+    GraphicView graphicView;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -21,6 +24,14 @@ public class MainActivity extends Activity{
 
         videoOverlayView = new VideoOverlayView(this);
         addContentView(videoOverlayView, new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
+
+        graphicView = new GraphicView(this);
+        addContentView(graphicView, new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
+        // Set transparency in GraphicView
+        graphicView.setZOrderOnTop(true);
+        SurfaceHolder holderTransparent = graphicView.getHolder();
+        holderTransparent.setFormat(PixelFormat.TRANSPARENT);
+
     }
 
     @Override
