@@ -9,38 +9,38 @@ import android.view.ViewGroup.LayoutParams;
 import androidx.annotation.Nullable;
 
 public class MainActivity extends Activity{
-    MySurfaceView mMySurfaceView;
-    MyTextView mMyTextView;
+    VideoView videoView;
+    VideoOverlayView videoOverlayView;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        mMySurfaceView = new MySurfaceView(this);
-        setContentView(mMySurfaceView, new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
+        videoView = new VideoView(this);
+        setContentView(videoView, new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
 
-        mMyTextView = new MyTextView(this);
-        addContentView(mMyTextView, new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
+        videoOverlayView = new VideoOverlayView(this);
+        addContentView(videoOverlayView, new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
     }
 
     @Override
     public boolean onKeyUp(int keyCode, KeyEvent event) {
         switch (keyCode) {
             case KeyEvent.KEYCODE_SPACE:
-                if (mMySurfaceView.mediaPlayer.isPlaying()) {
-                    mMySurfaceView.mediaPlayer.pause();
+                if (videoView.mediaPlayer.isPlaying()) {
+                    videoView.mediaPlayer.pause();
                 } else {
-                    mMySurfaceView.mediaPlayer.start();
+                    videoView.mediaPlayer.start();
                 }
                 return true;
             case KeyEvent.KEYCODE_ENTER:
-                mMyTextView.setTextSize(70);
-                mMyTextView.setTextColor(0xFFFF0000);
-                mMyTextView.setGravity(Gravity.CENTER);
-                mMyTextView.setText("Alticast");
+                videoOverlayView.setTextSize(70);
+                videoOverlayView.setTextColor(0xFFFF0000);
+                videoOverlayView.setGravity(Gravity.CENTER);
+                videoOverlayView.setText("Alticast");
                 return true;
             case KeyEvent.KEYCODE_DEL:
-                mMyTextView.setText("");
+                videoOverlayView.setText("");
                 return true;
             default:
                 return super.onKeyUp(keyCode, event);

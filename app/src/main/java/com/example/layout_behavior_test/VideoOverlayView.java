@@ -5,11 +5,8 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 
-public class MyTextView extends TextView {
-    public MyTextView(@NonNull Context context) {
+public class VideoOverlayView extends TextView {
+    public VideoOverlayView(@NonNull Context context) {
         super(context);
-
-        this.setTextSize(50);
-        this.setText("Create TextView");
     }
 }

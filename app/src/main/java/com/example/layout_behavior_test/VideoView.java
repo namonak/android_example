@@ -8,11 +8,11 @@ import android.view.SurfaceView;
 
 import androidx.annotation.NonNull;
 
-public class MySurfaceView extends SurfaceView implements SurfaceHolder.Callback {
+public class VideoView extends SurfaceView implements SurfaceHolder.Callback {
     SurfaceHolder surfaceHolder;
     MediaPlayer mediaPlayer;
 
-    public MySurfaceView(Context context) {
+    public VideoView(Context context) {
         super(context);
         surfaceHolder = getHolder();
         surfaceHolder.addCallback(this);
@@ -27,7 +27,7 @@ public class MySurfaceView extends SurfaceView implements SurfaceHolder.Callback
         }
 
         try {
-            String path = "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4";
+            String path = "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4";
 
             mediaPlayer.setDataSource(path);
             mediaPlayer.setDisplay(surfaceHolder);
