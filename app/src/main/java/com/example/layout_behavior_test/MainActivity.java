@@ -53,10 +53,16 @@ public class MainActivity extends Activity{
                 videoOverlayView.setText("");
                 return true;
             case KeyEvent.KEYCODE_A:
-                graphicView.drawFigure(GraphicView.Circle);
+                graphicView.drawFigure(GraphicView.FIGURE_TYPE_CIRCLE);
                 return true;
             case KeyEvent.KEYCODE_B:
-                graphicView.drawFigure(GraphicView.Rectangle);
+                graphicView.drawFigure(GraphicView.FIGURE_TYPE_RECTANGLE);
+                return true;
+            case KeyEvent.KEYCODE_C:
+                graphicView.drawFigure(GraphicView.FIGURE_TYPE_ARC);
+                return true;
+            case KeyEvent.KEYCODE_D:
+                graphicView.drawFigure(GraphicView.FIGURE_TYPE_RESOURCE_PNG);
                 return true;
             default:
                 return super.onKeyUp(keyCode, event);
